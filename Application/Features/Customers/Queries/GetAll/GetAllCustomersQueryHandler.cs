@@ -1,4 +1,5 @@
-﻿using Application.Repositories;
+﻿using Application.Dtos;
+using Application.Repositories;
 using Domain.Entities;
 using MediatR;
 using System;
@@ -23,7 +24,19 @@ namespace Application.Features.Customers.Queries.GetAll
         public async Task<GetAllCustomersQueryResponse> Handle(GetAllCustomersQueryRequest request, CancellationToken cancellationToken)
         {
             var customers = await _repository.GetAllAsync();
-            return new(customers);
+            List<GetAllCustomersDto> deserializedCustomers = new List<GetAllCustomersDto>();
+
+            foreach (var customer in customers) {
+                deserializedCustomers.Add(new GetAllCustomersDto(){ 
+                    FirstName = customer.FirstName,
+                    LastName = customer.LastName,
+                    Role = customer.Role,
+                    Company = customer.Company,
+                    ContactInfo = JsonSerializer.Deserialize<ContactInfo>(customer.ContactInfo) 
+                    });
+            }
+
+            return new(deserializedCustomers);
         }
     }
 }

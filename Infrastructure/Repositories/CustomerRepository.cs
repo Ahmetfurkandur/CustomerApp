@@ -10,6 +10,7 @@ using System.Threading.Tasks;
 using System.Data.SqlClient;
 using Domain.Entities;
 using Application.Repositories;
+using Application.Dtos;
 
 namespace Infrastructure.Repositories
 {
@@ -24,7 +25,7 @@ namespace Infrastructure.Repositories
             _connectionString = _configuration.GetConnectionString("Default");
         }
 
-        public async Task AddAsync(Customer customer)
+        public async Task AddAsync(AddCustomerDto customer)
         {
             using (var connection = new SqlConnection(_connectionString))
             {
@@ -36,7 +37,9 @@ namespace Infrastructure.Repositories
         {
             using (var connection = new SqlConnection(_connectionString))
             {
-                await connection.QuerySingleOrDefaultAsync<Customer>("SP_DeleteCustomer", id, commandType: System.Data.CommandType.StoredProcedure);
+                var parameters = new DynamicParameters();
+                parameters.Add("Id", id);
+                await connection.QuerySingleOrDefaultAsync<Customer>("SP_DeleteCustomer", param: parameters, commandType: System.Data.CommandType.StoredProcedure);
             }
         }
 
@@ -44,7 +47,7 @@ namespace Infrastructure.Repositories
         {
             using (var connection = new SqlConnection(_connectionString))
             {
-                return await connection.QueryAsync<Customer>("SP_GetAllCustomers", commandType: System.Data.CommandType.StoredProcedure);
+                return await connection.QueryAsync<Customer>("SP_CustomersGetAll", commandType: System.Data.CommandType.StoredProcedure);
             }
         }
 

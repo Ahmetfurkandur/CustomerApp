@@ -2,6 +2,7 @@
 using System.Text.Json;
 using Domain.Entities;
 using Application.Repositories;
+using Application.Dtos;
 
 namespace WebAPI.Features.Customers.Commands.Add
 {
@@ -18,7 +19,7 @@ namespace WebAPI.Features.Customers.Commands.Add
         {
             var contactInfo = JsonSerializer.Serialize(request.ContactInfo);
 
-            var customer = new Customer()
+            var customer = new AddCustomerDto()
             {
                 FirstName = request.FirstName,
                 LastName = request.LastName,

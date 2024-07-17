@@ -1,8 +1,10 @@
-﻿using Application.Features.Customers.Queries.GetAll;
+﻿using Application.Features.Customers.Commands.Delete;
+using Application.Features.Customers.Queries.GetAll;
 using MediatR;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using WebAPI.Features.Customers.Commands.Add;
+using WebAPI.Features.Customers.Commands.Update;
 
 namespace WebAPI.Controllers
 {
@@ -18,9 +20,9 @@ namespace WebAPI.Controllers
         }
 
         [HttpGet("getall")]
-        public async Task<IActionResult> GetAll(GetAllCustomersQueryRequest request)
+        public async Task<IActionResult> GetAll()
         {
-            var response = await _mediator.Send(request);
+            var response = await _mediator.Send(new GetAllCustomersQueryRequest());
             return Ok(response);
         }
 
@@ -31,6 +33,19 @@ namespace WebAPI.Controllers
             return NoContent();
         }
 
+        [HttpPut("update")]
+        public async Task<IActionResult> Update(UpdateCustomerCommandRequest request)
+        {
+            await _mediator.Send(request);
+            return NoContent();
+        }
+
+        [HttpDelete("delete")]
+        public async Task<IActionResult> Delete([FromQuery]DeleteCustomerCommandRequest request)
+        {
+            await _mediator.Send(request);
+            return NoContent();
+        }
 
     }
 }
